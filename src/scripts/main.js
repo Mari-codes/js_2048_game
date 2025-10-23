@@ -1,9 +1,8 @@
 'use strict';
 
-const Game = require('../modules/Game.class');
-const game = new Game();
+import Game from '../modules/Game.class.js';
 
-// Write your code here
+const game = new Game();
 
 const startButton = document.querySelector('.button.start');
 const scoreElement = document.querySelector('.game-score');
@@ -20,7 +19,15 @@ function renderBoard(state) {
 
     cell.textContent = value === 0 ? '' : value;
 
-    cell.className = 'field-cell';
+    cell.classList.forEach((cls) => {
+      if (cls.startsWith('field-cell--')) {
+        cell.classList.remove(cls);
+      }
+    });
+
+    if (!cell.classList.contains('field-cell')) {
+      cell.classList.add('field-cell');
+    }
 
     if (value) {
       cell.classList.add(`field-cell--${value}`);
@@ -29,19 +36,24 @@ function renderBoard(state) {
 
   scoreElement.textContent = state.score;
 
+  messageWin.classList.add('hidden');
+  messageLose.classList.add('hidden');
   messageStart.classList.add('hidden');
 
-  if (state.status === 'won') {
+  if (state.status === 'win') {
     messageWin.classList.remove('hidden');
   }
 
-  if (state.status === 'lost') {
+  if (state.status === 'lose') {
     messageLose.classList.remove('hidden');
   }
 }
 
 startButton.addEventListener('click', () => {
   messageLose.classList.add('hidden');
+  messageWin.classList.add('hidden');
+  messageStart.classList.add('hidden');
+
   game.restart();
   startButton.textContent = 'Restart';
   startButton.classList.remove('start');

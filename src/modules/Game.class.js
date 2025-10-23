@@ -5,25 +5,8 @@
  * Now it has a basic structure, that is needed for testing.
  * Feel free to add more props and methods if needed.
  */
-class Game {
-  /**
-   * Creates a new game instance.
-   *
-   * @param {number[][]} initialState
-   * The initial state of the board.
-   * @default
-   * [[0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0],
-   *  [0, 0, 0, 0]]
-   *
-   * If passed, the board will be initialized with the provided
-   * initial state.
-   */
+export default class Game {
   constructor(initialState) {
-    // eslint-disable-next-line no-console
-    console.log(initialState);
-
     this.size = 4;
     this.score = 0;
     this.status = 'idle';
@@ -58,7 +41,7 @@ class Game {
           row[i + 1] = 0;
 
           if (row[i] === 2048) {
-            this.status = 'won';
+            this.status = 'win';
           }
         }
       }
@@ -69,7 +52,7 @@ class Game {
         row.push(0);
       }
 
-      if (this.arraysEqual(this.board[y], row) === false) {
+      if (!this.arraysEqual(this.board[y], row)) {
         moved = true;
         this.board[y] = row;
       }
@@ -77,10 +60,11 @@ class Game {
 
     if (moved) {
       this.addRandomTile();
+    }
 
-      if (this.canMove() === false) {
-        this.status = 'lost';
-      }
+    // Verificação de game over fora do if(moved)
+    if (!this.canMove()) {
+      this.status = 'lose'; // ajustado para 'lose'
     }
   }
 
@@ -102,16 +86,10 @@ class Game {
     this.transpose();
   }
 
-  /**
-   * @returns {number}
-   */
   getScore() {
     return this.score;
   }
 
-  /**
-   * @returns {number[][]}
-   */
   getState() {
     return {
       board: this.board.map((row) => [...row]),
@@ -120,30 +98,14 @@ class Game {
     };
   }
 
-  /**
-   * Returns the current game status.
-   *
-   * @returns {string} One of: 'idle', 'playing', 'win', 'lose'
-   *
-   * `idle` - the game has not started yet (the initial state);
-   * `playing` - the game is in progress;
-   * `win` - the game is won;
-   * `lose` - the game is lost
-   */
   getStatus() {
     return this.status;
   }
 
-  /**
-   * Starts the game.
-   */
   start() {
     this.restart();
   }
 
-  /**
-   * Resets the game.
-   */
   restart() {
     this.board = [
       [0, 0, 0, 0],
@@ -156,8 +118,6 @@ class Game {
     this.addRandomTile();
     this.addRandomTile();
   }
-
-  // Add your own methods here
 
   addRandomTile() {
     const emptyCells = [];
@@ -229,5 +189,3 @@ class Game {
     this.board = newBoard;
   }
 }
-
-module.exports = Game;
